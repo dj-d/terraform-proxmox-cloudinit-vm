@@ -1,5 +1,8 @@
 # terraform-proxmox-cloudinit-vm
 
+Terraform module that uses the BPG/Proxmox provider to create and configure virtual machines (VMs) on a Proxmox VE
+environment, leveraging Cloud-Init for initial configuration automation.
+
 ## Requirements
 
 | Name                                                                   | Version |
