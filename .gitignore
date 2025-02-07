@@ -1,0 +1,33 @@
+### Terraform template
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+*.tfvars
+*.tfvars.json
+
+.terraform.lock.hcl
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+### JeBrains
+.idea/
+
+### Visual Studio Code
+.vscode/
+
+### Other
+*.txt
+*.pem
