@@ -1,6 +1,6 @@
 locals {
   content_type = "snippets"
-  data_store = "local"
+  data_store   = "local"
 }
 
 resource "tls_private_key" "this" {
@@ -13,10 +13,10 @@ resource "tls_private_key" "this" {
 resource "local_file" "private_key" {
   count = var.create_ssh_key ? 1 : 0
 
-  filename = "${var.vm_id}.pem"
-  content = tls_private_key.this[0].private_key_pem
+  filename             = "${var.vm_id}.pem"
+  content              = tls_private_key.this[0].private_key_pem
   directory_permission = "0400"
-  file_permission = "0400"
+  file_permission      = "0400"
 
   depends_on = [
     tls_private_key.this
@@ -40,7 +40,7 @@ data "template_file" "base" {
 }
 
 resource "proxmox_virtual_environment_file" "base" {
-  count = var.use_base_user_data ? 1 : 0
+  count = var.use_base_user_data && var.init ? 1 : 0
 
   content_type = local.content_type
   datastore_id = local.data_store
