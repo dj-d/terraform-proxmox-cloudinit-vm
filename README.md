@@ -3,6 +3,23 @@
 Terraform module that uses the BPG/Proxmox provider to create and configure virtual machines (VMs) on a Proxmox VE
 environment, leveraging Cloud-Init for initial configuration automation.
 
+## Usage
+
+Basic usage of this module is as follows:
+
+```hcl
+module "ubuntu_docker" {
+  source = "dj-d/cloudinit-vm/proxmox"
+
+  name  = "ubuntu-24-04-lts"
+  vm_id = 100
+  disk = {
+    datastore_id = "local"
+    size         = 20
+  }
+}
+```
+
 ## Requirements
 
 | Name                                                                   | Version |
