@@ -14,22 +14,21 @@ variable "node_name" {
   default     = "reiner"
 }
 
-variable "ipv4_address" {
+# TODO: Check if works
+variable "ipv4" {
   description = "The IPv4 address of the VM."
-  type        = string
-  default     = "dhcp"
+  type        = object({
+    address = string
+    gateway = optional(string, null)
+  })
+  default     = {
+    address: "dhcp"
+  }
 }
 
 variable "user_data_file_id" {
   description = "The ID of the user data file."
   type        = string
-  default     = null
-}
-
-variable "use_base_user_data" {
-  description = "Use the base user data."
-  type        = bool
-  default     = true
 }
 
 variable "meta_data_file_id" {
@@ -89,24 +88,6 @@ variable "tags" {
   description = "The tags of the VM."
   type        = list(string)
   default     = []
-}
-
-variable "username" {
-  description = "The username."
-  type        = string
-  default     = "ubuntu"
-}
-
-variable "hostname" {
-  description = "The hostname."
-  type        = string
-  default     = "ubuntu"
-}
-
-variable "create_ssh_key" {
-  description = "The SSH key."
-  type        = string
-  default     = true
 }
 
 variable "tpm_conf" {

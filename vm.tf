@@ -21,11 +21,12 @@ resource "proxmox_virtual_environment_vm" "this" {
     content {
       ip_config {
         ipv4 {
-          address = var.ipv4_address
+          address = var.ipv4.address
+          gateway = var.ipv4.gateway
         }
       }
 
-      user_data_file_id = var.user_data_file_id == null ? proxmox_virtual_environment_file.base[0].id : var.user_data_file_id
+      user_data_file_id = var.user_data_file_id
       meta_data_file_id = var.meta_data_file_id == null ? null : var.meta_data_file_id
     }
   }
