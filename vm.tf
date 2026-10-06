@@ -58,7 +58,8 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   network_device {
-    bridge = var.network_device.bridge
+    bridge   = var.network_device.bridge
+    firewall = var.network_device.firewall
   }
 
   dynamic "tpm_state" {

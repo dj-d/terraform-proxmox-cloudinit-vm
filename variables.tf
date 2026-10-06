@@ -17,12 +17,12 @@ variable "node_name" {
 # TODO: Check if works
 variable "ipv4" {
   description = "The IPv4 address of the VM."
-  type        = object({
+  type = object({
     address = string
     gateway = optional(string, null)
   })
-  default     = {
-    address: "dhcp"
+  default = {
+    address : "dhcp"
   }
 }
 
@@ -77,10 +77,12 @@ variable "disk" {
 variable "network_device" {
   description = "The network device configuration."
   type = object({
-    bridge = string
+    bridge   = string
+    firewall = optional(bool, false)
   })
   default = {
-    bridge = "vmbr0"
+    bridge   = "vmbr0"
+    firewall = false
   }
 }
 

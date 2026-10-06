@@ -17,6 +17,10 @@ module "ubuntu_docker" {
     datastore_id = "local"
     size         = 20
   }
+  network_device = {
+    bridge   = "vmbr0"
+    firewall = true
+  }
 }
 ```
 
