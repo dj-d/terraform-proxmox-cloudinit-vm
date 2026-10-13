@@ -146,6 +146,12 @@ variable "started" {
   default     = true
 }
 
+variable "on_boot" {
+  description = "Start the VM when the Proxmox node boots."
+  type        = bool
+  default     = true
+}
+
 variable "init" {
   description = "The init script."
   type        = bool

@@ -9,6 +9,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   scsi_hardware = var.scsi_hardware
 
   started = var.started
+  on_boot = var.on_boot
 
   stop_on_destroy = true
 
