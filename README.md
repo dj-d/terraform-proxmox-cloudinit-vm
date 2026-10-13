@@ -1,5 +1,9 @@
 # Terraform Proxmox Cloud-Init VM
 
+[![Quality](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/actions/workflows/quality.yml/badge.svg)](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/actions/workflows/quality.yml)
+[![Terraform Registry](https://img.shields.io/badge/Terraform%20Registry-dj--d%2Fcloudinit--vm%2Fproxmox-844FBA?logo=terraform)](https://registry.terraform.io/modules/dj-d/cloudinit-vm/proxmox/latest)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
 Terraform module for provisioning a Proxmox VE virtual machine with optional
 Cloud-Init customization, multiple disks, UEFI, and TPM support.
 
@@ -90,14 +94,14 @@ copying an example into another repository.
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_proxmox"></a> [proxmox](#requirement\_proxmox) | >= 0.111.0, < 1.0.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_proxmox"></a> [proxmox](#provider\_proxmox) | >= 0.111.0, < 1.0.0 |
 
 ## Modules
@@ -107,13 +111,13 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [proxmox_virtual_environment_vm.this](https://registry.terraform.io/providers/bpg/proxmox/latest/docs/resources/virtual_environment_vm) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_agent_enabled"></a> [agent\_enabled](#input\_agent\_enabled) | Whether to enable the QEMU guest agent integration. | `bool` | `true` | no |
 | <a name="input_bios"></a> [bios](#input\_bios) | The BIOS configuration. | `string` | `"seabios"` | no |
 | <a name="input_cpu_config"></a> [cpu\_config](#input\_cpu\_config) | The VM CPU configuration. | <pre>object({<br/>    cores = number<br/>    type  = optional(string, "host")<br/>  })</pre> | <pre>{<br/>  "cores": 1,<br/>  "type": "host"<br/>}</pre> | no |
@@ -140,7 +144,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_ipv4_addresses"></a> [ipv4\_addresses](#output\_ipv4\_addresses) | IPv4 addresses reported by the QEMU guest agent. |
 | <a name="output_ipv6_addresses"></a> [ipv6\_addresses](#output\_ipv6\_addresses) | IPv6 addresses reported by the QEMU guest agent. |
 | <a name="output_mac_addresses"></a> [mac\_addresses](#output\_mac\_addresses) | MAC addresses reported for the VM network interfaces. |
