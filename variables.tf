@@ -1,16 +1,31 @@
 variable "vm_id" {
   description = "The ID of the VM."
   type        = number
+
+  validation {
+    condition     = var.vm_id >= 100 && var.vm_id <= 999999999 && floor(var.vm_id) == var.vm_id
+    error_message = "vm_id must be an integer between 100 and 999999999."
+  }
 }
 
 variable "name" {
   description = "The name of the VM."
   type        = string
+
+  validation {
+    condition     = length(trimspace(var.name)) > 0
+    error_message = "name must not be empty."
+  }
 }
 
 variable "node_name" {
   description = "The name of the Proxmox node on which to create the VM."
   type        = string
+
+  validation {
+    condition     = length(trimspace(var.node_name)) > 0
+    error_message = "node_name must not be empty."
+  }
 }
 
 variable "ipv4" {
@@ -21,6 +36,21 @@ variable "ipv4" {
   })
   default = {
     address : "dhcp"
+  }
+
+  validation {
+    condition     = var.ipv4.address == "dhcp" || can(cidrnetmask(var.ipv4.address))
+    error_message = "ipv4.address must be 'dhcp' or a valid IPv4 CIDR address."
+  }
+
+  validation {
+    condition     = var.ipv4.gateway == null ? true : can(cidrnetmask("${var.ipv4.gateway}/32"))
+    error_message = "ipv4.gateway must be null or a valid IPv4 address without a prefix length."
+  }
+
+  validation {
+    condition     = var.ipv4.address == "dhcp" ? var.ipv4.gateway == null : true
+    error_message = "ipv4.gateway must be null when ipv4.address is 'dhcp'."
   }
 }
 
@@ -37,7 +67,7 @@ variable "meta_data_file_id" {
 }
 
 variable "cpu_config" {
-  description = "The number of CPU cores."
+  description = "The VM CPU configuration."
   type = object({
     cores = number
     type  = optional(string, "host")
@@ -45,6 +75,17 @@ variable "cpu_config" {
   default = {
     cores = 1
     type  = "host"
+  }
+
+
+  validation {
+    condition     = var.cpu_config.cores >= 1 && floor(var.cpu_config.cores) == var.cpu_config.cores
+    error_message = "cpu_config.cores must be a positive integer."
+  }
+
+  validation {
+    condition     = length(trimspace(var.cpu_config.type)) > 0
+    error_message = "cpu_config.type must not be empty."
   }
 }
 
@@ -58,10 +99,19 @@ variable "memory" {
     dedicated = 2048
     floating  = 2048
   }
+
+  validation {
+    condition = (
+      var.memory.dedicated > 0 &&
+      var.memory.floating >= 0 &&
+      var.memory.floating <= var.memory.dedicated
+    )
+    error_message = "memory.dedicated must be positive and memory.floating must be between 0 and memory.dedicated."
+  }
 }
 
 variable "disk" {
-  description = "The disk configuration."
+  description = "One or more VM disk configurations."
   type = list(object({
     interface         = optional(string, "scsi0")
     size              = number
@@ -71,6 +121,34 @@ variable "disk" {
     file_format       = optional(string)
     iothread          = optional(bool, false)
   }))
+
+  validation {
+    condition     = length(var.disk) > 0
+    error_message = "disk must contain at least one disk configuration."
+  }
+
+  validation {
+    condition = alltrue([
+      for disk in var.disk :
+      disk.size > 0 &&
+      length(trimspace(disk.interface)) > 0 &&
+      length(trimspace(disk.datastore_id)) > 0
+    ])
+    error_message = "Each disk must have a positive size, a non-empty interface, and a non-empty datastore_id."
+  }
+
+  validation {
+    condition     = length(distinct([for disk in var.disk : disk.interface])) == length(var.disk)
+    error_message = "Each disk must use a unique interface."
+  }
+
+  validation {
+    condition = alltrue([
+      for disk in var.disk :
+      !(disk.file_id != null && disk.path_in_datastore != null)
+    ])
+    error_message = "A disk cannot set both file_id and path_in_datastore."
+  }
 }
 
 variable "network_device" {
@@ -83,6 +161,11 @@ variable "network_device" {
     bridge   = "vmbr0"
     firewall = false
   }
+
+  validation {
+    condition     = length(trimspace(var.network_device.bridge)) > 0
+    error_message = "network_device.bridge must not be empty."
+  }
 }
 
 variable "tags" {
@@ -92,12 +175,20 @@ variable "tags" {
 }
 
 variable "tpm_conf" {
-  description = "The TPM state."
+  description = "Optional TPM state configuration."
   type = object({
     datastore_id = string
     version      = string
   })
   default = null
+
+  validation {
+    condition = var.tpm_conf == null ? true : (
+      length(trimspace(var.tpm_conf.datastore_id)) > 0 &&
+      contains(["v1.2", "v2.0"], var.tpm_conf.version)
+    )
+    error_message = "tpm_conf.datastore_id must not be empty and version must be 'v1.2' or 'v2.0'."
+  }
 }
 
 variable "efi_disk_conf" {
@@ -115,6 +206,11 @@ variable "bios" {
   description = "The BIOS configuration."
   type        = string
   default     = "seabios"
+
+  validation {
+    condition     = contains(["seabios", "ovmf"], var.bios)
+    error_message = "bios must be either 'seabios' or 'ovmf'."
+  }
 }
 
 variable "keyboard_layout" {
@@ -137,6 +233,18 @@ variable "scsi_hardware" {
   description = "The SCSI hardware."
   type        = string
   default     = "virtio-scsi-pci"
+
+  validation {
+    condition = contains([
+      "lsi",
+      "lsi53c810",
+      "megasas",
+      "pvscsi",
+      "virtio-scsi-pci",
+      "virtio-scsi-single",
+    ], var.scsi_hardware)
+    error_message = "scsi_hardware must be a supported Proxmox SCSI controller type."
+  }
 }
 
 variable "started" {
