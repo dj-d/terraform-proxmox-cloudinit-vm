@@ -9,14 +9,12 @@ variable "name" {
 }
 
 variable "node_name" {
-  description = "The name of the node."
+  description = "The name of the Proxmox node on which to create the VM."
   type        = string
-  default     = "reiner"
 }
 
-# TODO: Check if works
 variable "ipv4" {
-  description = "The IPv4 address of the VM."
+  description = "The Cloud-Init IPv4 configuration. Use 'dhcp' or a CIDR address."
   type = object({
     address = string
     gateway = optional(string, null)
@@ -27,8 +25,9 @@ variable "ipv4" {
 }
 
 variable "user_data_file_id" {
-  description = "The ID of the user data file."
+  description = "Optional Proxmox file ID containing Cloud-Init user data."
   type        = string
+  default     = null
 }
 
 variable "meta_data_file_id" {
@@ -141,19 +140,31 @@ variable "scsi_hardware" {
 }
 
 variable "started" {
-  description = "Start the VM."
+  description = "Whether the VM should be running."
   type        = bool
   default     = true
 }
 
 variable "on_boot" {
-  description = "Start the VM when the Proxmox node boots."
+  description = "Whether to start the VM when the Proxmox node boots."
   type        = bool
   default     = true
 }
 
-variable "init" {
-  description = "The init script."
+variable "initialization_enabled" {
+  description = "Whether to configure the Proxmox Cloud-Init initialization block."
+  type        = bool
+  default     = true
+}
+
+variable "agent_enabled" {
+  description = "Whether to enable the QEMU guest agent integration."
+  type        = bool
+  default     = true
+}
+
+variable "stop_on_destroy" {
+  description = "Whether to stop the VM before destroying it."
   type        = bool
   default     = true
 }

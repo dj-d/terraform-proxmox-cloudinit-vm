@@ -11,14 +11,14 @@ resource "proxmox_virtual_environment_vm" "this" {
   started = var.started
   on_boot = var.on_boot
 
-  stop_on_destroy = true
+  stop_on_destroy = var.stop_on_destroy
 
   agent {
-    enabled = true
+    enabled = var.agent_enabled
   }
 
   dynamic "initialization" {
-    for_each = var.init ? [var.init] : []
+    for_each = var.initialization_enabled ? [1] : []
     content {
       ip_config {
         ipv4 {
