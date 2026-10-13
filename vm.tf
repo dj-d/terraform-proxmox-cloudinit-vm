@@ -9,23 +9,25 @@ resource "proxmox_virtual_environment_vm" "this" {
   scsi_hardware = var.scsi_hardware
 
   started = var.started
+  on_boot = var.on_boot
 
-  stop_on_destroy = true
+  stop_on_destroy = var.stop_on_destroy
 
   agent {
-    enabled = true
+    enabled = var.agent_enabled
   }
 
   dynamic "initialization" {
-    for_each = var.init ? [var.init] : []
+    for_each = var.initialization_enabled ? [1] : []
     content {
       ip_config {
         ipv4 {
-          address = var.ipv4_address
+          address = var.ipv4.address
+          gateway = var.ipv4.gateway
         }
       }
 
-      user_data_file_id = var.user_data_file_id == null ? proxmox_virtual_environment_file.base[0].id : var.user_data_file_id
+      user_data_file_id = var.user_data_file_id
       meta_data_file_id = var.meta_data_file_id == null ? null : var.meta_data_file_id
     }
   }
@@ -57,7 +59,8 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   network_device {
-    bridge = var.network_device.bridge
+    bridge   = var.network_device.bridge
+    firewall = var.network_device.firewall
   }
 
   dynamic "tpm_state" {
