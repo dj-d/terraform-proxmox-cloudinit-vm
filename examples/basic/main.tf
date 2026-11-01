@@ -75,6 +75,10 @@ module "vm" {
     address = "dhcp"
   }
 
+  dns = {
+    servers = ["1.1.1.1", "1.0.0.1"]
+  }
+
   network_device = {
     bridge   = var.network_bridge
     firewall = true
