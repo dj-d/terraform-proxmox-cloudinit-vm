@@ -54,6 +54,24 @@ variable "ipv4" {
   }
 }
 
+variable "dns" {
+  description = "The Cloud-Init DNS configuration. Servers are applied in the specified order."
+  type = object({
+    servers = list(string)
+  })
+  default = {
+    servers = []
+  }
+
+  validation {
+    condition = alltrue([
+      for server in var.dns.servers :
+      can(cidrhost("${server}/32", 0)) || can(cidrhost("${server}/128", 0))
+    ])
+    error_message = "dns.servers must contain valid IPv4 or IPv6 addresses without prefix lengths."
+  }
+}
+
 variable "user_data_file_id" {
   description = "Optional Proxmox file ID containing Cloud-Init user data."
   type        = string

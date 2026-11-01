@@ -54,6 +54,11 @@ run "default_configuration" {
     condition     = proxmox_virtual_environment_vm.this.initialization[0].ip_config[0].ipv4[0].address == "dhcp"
     error_message = "Cloud-Init should use DHCP by default."
   }
+
+  assert {
+    condition     = length(proxmox_virtual_environment_vm.this.initialization[0].dns) == 0
+    error_message = "Cloud-Init DNS should remain unset by default."
+  }
 }
 
 run "static_ipv4_with_uefi_and_tpm" {
@@ -69,6 +74,9 @@ run "static_ipv4_with_uefi_and_tpm" {
     ipv4 = {
       address = "10.0.0.100/24"
       gateway = "10.0.0.1"
+    }
+    dns = {
+      servers = ["10.0.0.138", "10.0.0.139"]
     }
     network_device = {
       bridge   = "vmbr1"
@@ -103,6 +111,14 @@ run "static_ipv4_with_uefi_and_tpm" {
   assert {
     condition     = proxmox_virtual_environment_vm.this.initialization[0].ip_config[0].ipv4[0].gateway == "10.0.0.1"
     error_message = "The static IPv4 gateway was not propagated."
+  }
+
+  assert {
+    condition = tolist(proxmox_virtual_environment_vm.this.initialization[0].dns[0].servers) == tolist([
+      "10.0.0.138",
+      "10.0.0.139",
+    ])
+    error_message = "The ordered DNS server list was not propagated."
   }
 
   assert {
@@ -205,4 +221,25 @@ run "reject_gateway_with_dhcp" {
   }
 
   expect_failures = [var.ipv4]
+}
+
+run "reject_invalid_dns_server" {
+  command = plan
+
+  variables {
+    vm_id     = 9005
+    name      = "invalid-dns"
+    node_name = "pve"
+    dns = {
+      servers = ["not-an-ip-address"]
+    }
+    disk = [
+      {
+        datastore_id = "local-lvm"
+        size         = 16
+      }
+    ]
+  }
+
+  expect_failures = [var.dns]
 }

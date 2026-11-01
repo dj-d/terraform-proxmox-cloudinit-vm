@@ -27,6 +27,14 @@ resource "proxmox_virtual_environment_vm" "this" {
         }
       }
 
+      dynamic "dns" {
+        for_each = length(var.dns.servers) > 0 ? [var.dns] : []
+
+        content {
+          servers = dns.value.servers
+        }
+      }
+
       user_data_file_id = var.user_data_file_id
       meta_data_file_id = var.meta_data_file_id == null ? null : var.meta_data_file_id
     }

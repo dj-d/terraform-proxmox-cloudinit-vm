@@ -9,7 +9,7 @@ Cloud-Init customization, multiple disks, UEFI, and TPM support.
 
 ## Features
 
-- Cloud-Init DHCP or static IPv4 configuration.
+- Cloud-Init DHCP or static IPv4 configuration with ordered DNS servers.
 - Custom Cloud-Init user-data and metadata snippets.
 - Multiple disks with configurable interfaces and datastores.
 - SeaBIOS or OVMF/UEFI boot.
@@ -56,6 +56,10 @@ module "ubuntu_vm" {
     gateway = "10.0.0.1"
   }
 
+  dns = {
+    servers = ["10.0.0.138", "10.0.0.139"]
+  }
+
   network_device = {
     bridge   = "vmbr0"
     firewall = true
@@ -81,6 +85,11 @@ See [`examples/basic`](examples/basic) for a complete Cloud-Init deployment and
 Version 2 contains breaking input and behavior changes. See
 [`docs/UPGRADING-2.0.md`](docs/UPGRADING-2.0.md) before upgrading from version
 1.x.
+
+## Project status
+
+Architecture decisions, maintainer procedures, completed work, and the roadmap
+are documented in [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md).
 
 ## Examples
 
@@ -122,6 +131,7 @@ No modules.
 | <a name="input_bios"></a> [bios](#input\_bios) | The BIOS configuration. | `string` | `"seabios"` | no |
 | <a name="input_cpu_config"></a> [cpu\_config](#input\_cpu\_config) | The VM CPU configuration. | <pre>object({<br/>    cores = number<br/>    type  = optional(string, "host")<br/>  })</pre> | <pre>{<br/>  "cores": 1,<br/>  "type": "host"<br/>}</pre> | no |
 | <a name="input_disk"></a> [disk](#input\_disk) | One or more VM disk configurations. | <pre>list(object({<br/>    interface         = optional(string, "scsi0")<br/>    size              = number<br/>    file_id           = optional(string)<br/>    datastore_id      = string<br/>    path_in_datastore = optional(string)<br/>    file_format       = optional(string)<br/>    iothread          = optional(bool, false)<br/>  }))</pre> | n/a | yes |
+| <a name="input_dns"></a> [dns](#input\_dns) | The Cloud-Init DNS configuration. Servers are applied in the specified order. | <pre>object({<br/>    servers = list(string)<br/>  })</pre> | <pre>{<br/>  "servers": []<br/>}</pre> | no |
 | <a name="input_efi_disk_conf"></a> [efi\_disk\_conf](#input\_efi\_disk\_conf) | The EFI disk configuration. | <pre>object({<br/>    datastore_id      = string<br/>    file_format       = optional(string, "raw")<br/>    pre_enrolled_keys = optional(bool, true)<br/>    type              = optional(string, "4m")<br/>  })</pre> | `null` | no |
 | <a name="input_initialization_enabled"></a> [initialization\_enabled](#input\_initialization\_enabled) | Whether to configure the Proxmox Cloud-Init initialization block. | `bool` | `true` | no |
 | <a name="input_ipv4"></a> [ipv4](#input\_ipv4) | The Cloud-Init IPv4 configuration. Use 'dhcp' or a CIDR address. | <pre>object({<br/>    address = string<br/>    gateway = optional(string, null)<br/>  })</pre> | <pre>{<br/>  "address": "dhcp"<br/>}</pre> | no |
