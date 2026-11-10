@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file. Releases
 follow [Semantic Versioning](https://semver.org/) and are generated from
 [Conventional Commits](https://www.conventionalcommits.org/).
 
+## [2.2.0](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/compare/v2.1.0...v2.2.0) (2026-11-10)
+
+
+### Features
+
+* **disk:** expose backup and replication controls ([a3d72c1](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/commit/a3d72c1a940681786d5c0ec2031592e165d0fa69))
+
 ## [2.1.0](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/compare/v2.0.0...v2.1.0) (2026-11-01)
 
 
