@@ -9,3 +9,7 @@ configuration, SSH access to the Proxmox node may also be required for import.
 
 Supply provider credentials through variables or your preferred secret
 management mechanism. Do not commit them in a `.tfvars` file.
+
+Each disk is included in Proxmox backups and storage replication by default.
+Set `backup = false` and `replicate = false` on disposable cache, workspace, or
+container-storage disks that should not be protected.

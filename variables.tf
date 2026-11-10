@@ -138,6 +138,8 @@ variable "disk" {
     path_in_datastore = optional(string)
     file_format       = optional(string)
     iothread          = optional(bool, false)
+    backup            = optional(bool, true)
+    replicate         = optional(bool, true)
   }))
 
   validation {

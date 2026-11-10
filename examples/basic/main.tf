@@ -68,6 +68,8 @@ module "vm" {
       interface    = "scsi0"
       size         = 20
       iothread     = true
+      backup       = true
+      replicate    = true
     }
   ]
 

@@ -63,6 +63,8 @@ resource "proxmox_virtual_environment_vm" "this" {
       path_in_datastore = disk.value.path_in_datastore
       file_format       = disk.value.file_format
       iothread          = disk.value.iothread
+      backup            = disk.value.backup
+      replicate         = disk.value.replicate
     }
   }
 
