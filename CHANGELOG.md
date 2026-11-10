@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file. Releases
 follow [Semantic Versioning](https://semver.org/) and are generated from
 [Conventional Commits](https://www.conventionalcommits.org/).
 
+## [2.1.0](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/compare/v2.0.0...v2.1.0) (2026-11-01)
+
+
+### Features
+
+* **network:** expose Cloud-Init DNS servers ([4c99ecf](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/commit/4c99ecf8daa3c0450f639ad35a4850437c4aafda))
+* **network:** expose Cloud-Init DNS servers ([a813096](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/commit/a81309628d38183511ec33d9976eeb47c30e294e))
+
 ## [2.0.0](https://github.com/dj-d/terraform-proxmox-cloudinit-vm/compare/v1.1.0...v2.0.0) (2026-10-13)
 
 
