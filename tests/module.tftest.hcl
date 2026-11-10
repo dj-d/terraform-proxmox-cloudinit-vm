@@ -59,6 +59,55 @@ run "default_configuration" {
     condition     = length(proxmox_virtual_environment_vm.this.initialization[0].dns) == 0
     error_message = "Cloud-Init DNS should remain unset by default."
   }
+
+  assert {
+    condition     = proxmox_virtual_environment_vm.this.disk[0].backup
+    error_message = "Disks should be included in backups by default."
+  }
+
+  assert {
+    condition     = proxmox_virtual_environment_vm.this.disk[0].replicate
+    error_message = "Disks should be replicated by default."
+  }
+}
+
+run "disk_backup_and_replication_disabled" {
+  command = plan
+
+  variables {
+    vm_id     = 9006
+    name      = "disposable-disk-vm"
+    node_name = "pve"
+    disk = [
+      {
+        datastore_id = "local-lvm"
+        interface    = "scsi0"
+        size         = 16
+      },
+      {
+        datastore_id = "local-lvm"
+        interface    = "scsi1"
+        size         = 64
+        backup       = false
+        replicate    = false
+      }
+    ]
+  }
+
+  assert {
+    condition     = proxmox_virtual_environment_vm.this.disk[0].backup && proxmox_virtual_environment_vm.this.disk[0].replicate
+    error_message = "Existing disk callers should retain backup and replication defaults."
+  }
+
+  assert {
+    condition     = !proxmox_virtual_environment_vm.this.disk[1].backup
+    error_message = "The per-disk backup setting was not propagated."
+  }
+
+  assert {
+    condition     = !proxmox_virtual_environment_vm.this.disk[1].replicate
+    error_message = "The per-disk replication setting was not propagated."
+  }
 }
 
 run "static_ipv4_with_uefi_and_tpm" {

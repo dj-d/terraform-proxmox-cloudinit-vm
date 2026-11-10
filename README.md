@@ -11,7 +11,7 @@ Cloud-Init customization, multiple disks, UEFI, and TPM support.
 
 - Cloud-Init DHCP or static IPv4 configuration with ordered DNS servers.
 - Custom Cloud-Init user-data and metadata snippets.
-- Multiple disks with configurable interfaces and datastores.
+- Multiple disks with configurable interfaces, datastores, backup, and replication.
 - SeaBIOS or OVMF/UEFI boot.
 - Optional EFI disk and TPM state.
 - Configurable QEMU guest agent, NIC firewall, startup, and destroy behavior.
@@ -48,6 +48,8 @@ module "ubuntu_vm" {
       interface     = "scsi0"
       size          = 20
       iothread      = true
+      backup        = true
+      replicate     = true
     }
   ]
 
@@ -78,6 +80,8 @@ See [`examples/basic`](examples/basic) for a complete Cloud-Init deployment and
   installed, enabled, and running inside the guest.
 - `stop_on_destroy` defaults to `true` to allow an orderly VM shutdown.
 - `on_boot` and `started` default to `true`.
+- Each disk defaults to `backup = true` and `replicate = true`; opt out per disk
+  for disposable data such as caches and container workspaces.
 - Provider credentials must not be committed to the repository.
 
 ## Upgrading
@@ -130,7 +134,7 @@ No modules.
 | <a name="input_agent_enabled"></a> [agent\_enabled](#input\_agent\_enabled) | Whether to enable the QEMU guest agent integration. | `bool` | `true` | no |
 | <a name="input_bios"></a> [bios](#input\_bios) | The BIOS configuration. | `string` | `"seabios"` | no |
 | <a name="input_cpu_config"></a> [cpu\_config](#input\_cpu\_config) | The VM CPU configuration. | <pre>object({<br/>    cores = number<br/>    type  = optional(string, "host")<br/>  })</pre> | <pre>{<br/>  "cores": 1,<br/>  "type": "host"<br/>}</pre> | no |
-| <a name="input_disk"></a> [disk](#input\_disk) | One or more VM disk configurations. | <pre>list(object({<br/>    interface         = optional(string, "scsi0")<br/>    size              = number<br/>    file_id           = optional(string)<br/>    datastore_id      = string<br/>    path_in_datastore = optional(string)<br/>    file_format       = optional(string)<br/>    iothread          = optional(bool, false)<br/>  }))</pre> | n/a | yes |
+| <a name="input_disk"></a> [disk](#input\_disk) | One or more VM disk configurations. | <pre>list(object({<br/>    interface         = optional(string, "scsi0")<br/>    size              = number<br/>    file_id           = optional(string)<br/>    datastore_id      = string<br/>    path_in_datastore = optional(string)<br/>    file_format       = optional(string)<br/>    iothread          = optional(bool, false)<br/>    backup            = optional(bool, true)<br/>    replicate         = optional(bool, true)<br/>  }))</pre> | n/a | yes |
 | <a name="input_dns"></a> [dns](#input\_dns) | The Cloud-Init DNS configuration. Servers are applied in the specified order. | <pre>object({<br/>    servers = list(string)<br/>  })</pre> | <pre>{<br/>  "servers": []<br/>}</pre> | no |
 | <a name="input_efi_disk_conf"></a> [efi\_disk\_conf](#input\_efi\_disk\_conf) | The EFI disk configuration. | <pre>object({<br/>    datastore_id      = string<br/>    file_format       = optional(string, "raw")<br/>    pre_enrolled_keys = optional(bool, true)<br/>    type              = optional(string, "4m")<br/>  })</pre> | `null` | no |
 | <a name="input_initialization_enabled"></a> [initialization\_enabled](#input\_initialization\_enabled) | Whether to configure the Proxmox Cloud-Init initialization block. | `bool` | `true` | no |
